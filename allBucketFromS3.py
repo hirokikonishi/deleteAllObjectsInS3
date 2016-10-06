@@ -15,6 +15,7 @@ flag = "True"
 while flag=="True":
 	objects = client.list_object_versions(
 	Bucket=AWS_S3_BUCKET_NAME,
+        #prefixが必要なければコメントアウトする。
 	Prefix='your_bucket_prefix'
 	)
 	flag = str(objects['IsTruncated'])
