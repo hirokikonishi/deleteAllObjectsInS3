@@ -5,32 +5,36 @@ import boto3
 import json
 
 # バケット名
-AWS_S3_BUCKET_NAME = 'your_bucket_name'
+f = open('./DeleteBucketsList.json', 'r')
+BucketsData = json.load(f)
+BucketKeyList = BucketsData['BucketList']
+rc = len(BucketKeyList)
 
-client = boto3.client('s3')
-# s3 = boto3.resource('s3')
-# bucket = s3.Bucket(AWS_S3_BUCKET_NAME)
-flag = "True"
-
-while flag=="True":
-	objects = client.list_object_versions(
-	Bucket=AWS_S3_BUCKET_NAME,
-	Prefix='your_bucket_prefix'
-	)
-	flag = str(objects['IsTruncated'])
-	dataList = objects['Versions']
-	for data in dataList:
-		keyName = data['Key']
-		versionId = data['VersionId']
-		deleteData = client.delete_object(
+for k in BucketKeyList:
+	AWS_S3_BUCKET_NAME = k['name']
+	client = boto3.client('s3')
+	flag = "True"
+	while flag=="True":
+		objects = client.list_object_versions(
 		Bucket=AWS_S3_BUCKET_NAME,
-		Key=keyName,
-		VersionId=versionId
+		#Prefix='log'
 		)
-		print deleteData
+		flag = str(objects['IsTruncated'])
+		dataList = objects['Versions']
+		for data in dataList:
+			keyName = data['Key']
+			versionId = data['VersionId']
+			deleteData = client.delete_object(
+			Bucket=AWS_S3_BUCKET_NAME,
+			Key=keyName,
+			VersionId=versionId
+			)
+			print deleteData
+		else:
+			print flag
+	print "-------------%s's all objects deleted-----------------" %(AWS_S3_BUCKET_NAME)
 else:
-	print flag
-	print "-------------all deleted-----------------"
+	print "-------------%d Buckets applied-----------------" %(rc)
 
 	
 	
