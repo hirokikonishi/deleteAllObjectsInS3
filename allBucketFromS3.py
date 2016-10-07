@@ -35,12 +35,3 @@ for k in BucketKeyList:
 	print "-------------%s's all objects deleted-----------------" %(AWS_S3_BUCKET_NAME)
 else:
 	print "-------------%d Buckets applied-----------------" %(rc)
-
-	
-	
-
-
-
-
-	
-        
